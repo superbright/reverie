@@ -12,7 +12,7 @@ namespace SB.Seed
     public class UIButtonTrigger : MonoBehaviour, IPointerTriggerPressSetHandler
     {
 
-        public TriggerMenuButton triggerHandler;
+        public ObjectFactory triggerHandler;
         public int index;
 
 

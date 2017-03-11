@@ -16,8 +16,8 @@ public class KeyboardEditor : MonoBehaviour
 
 	void OnEnable()
 	{
-		SteamVR_Utils.Event.Listen("KeyboardCharInput", OnKeyboard);
-		SteamVR_Utils.Event.Listen("KeyboardClosed", OnKeyboardClosed);
+       // SteamVR_Events.Event.Listen("KeyboardCharInput", OnKeyboard);
+       // SteamVR_Events.Event.Listen("KeyboardClosed", OnKeyboardClosed);
 	}
 
 	private void OnKeyboard(object[] args)

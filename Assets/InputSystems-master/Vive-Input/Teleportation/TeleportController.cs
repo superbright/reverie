@@ -61,16 +61,12 @@ public class TeleportController : MonoBehaviour, IGlobalTriggerClickHandler {
     if (cursor) {
       cursor.SetActive(false);
     }
-
   }
 
   void IGlobalTriggerClickHandler.OnGlobalTriggerClick(ViveControllerModule.EventData eventData) {
-        Debug.Log("0");
+      
     if (eventData.currentRaycast != null && eventData.currentRaycast.GetComponent<DOOObject>().type == DOOType.FLOOR) {
-            Debug.Log("1");
-          
-           Teleport(eventData.worldPosition);
-           
+           Teleport(eventData.worldPosition);     
     }
   }
 

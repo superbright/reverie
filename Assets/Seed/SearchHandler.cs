@@ -2,26 +2,34 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class SearchHandler : MonoBehaviour {
+namespace SB.Seed
+{
 
-	//search inputfield to parse
-	public InputField search;
-	WorldContentManager worldManager;
+    public class SearchHandler : MonoBehaviour
+    {
 
-	// Use this for initialization
-	void Start () {
-		search.onValueChange.AddListener (delegate {ValueChangeCheck ();});
-		worldManager = FindObjectOfType<WorldContentManager> ();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+        //search inputfield to parse
+        public InputField search;
+        WorldContentManager worldManager;
 
-	public void ValueChangeCheck()
-	{
-		Debug.Log ("Value Changed");
-		worldManager.Draw2DUIMenu (worldManager.worldData.searchVertices (search.text));
-	}
+        // Use this for initialization
+        void Start()
+        {
+            search.onValueChange.AddListener(delegate { ValueChangeCheck(); });
+            worldManager = FindObjectOfType<WorldContentManager>();
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+
+        }
+
+        public void ValueChangeCheck()
+        {
+            Debug.Log("Value Changed");
+            worldManager.Draw2DUIMenu(worldManager.worldData.searchVertices(search.text));
+        }
+    }
+
 }

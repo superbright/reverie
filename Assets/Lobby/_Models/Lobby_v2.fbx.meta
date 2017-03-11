@@ -1,0 +1,186 @@
+fileFormatVersion: 2
+guid: 326ece7618aca4d5baa86b7b5ee7c174
+timeCreated: 1489192084
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: 1x1_Image
+    100002: Couch
+    100004: Couch_Back
+    100006: Cube
+    100008: Cube_1
+    100010: Cube_1_2
+    100012: Cube_2
+    100014: Cube_2_2
+    100016: Cube_3
+    100018: Cube_4
+    100020: Cube_5
+    100022: Cushion
+    100024: Disc
+    100026: Frame___1x1
+    100028: Leaves
+    100030: Leaves_2
+    100032: //RootNode
+    100034: Marble_Columns
+    100036: Marble_Columns_1
+    100038: matte
+    100040: Pot
+    100042: Sphere
+    100044: Stem
+    100046: Stem_1
+    400000: 1x1_Image
+    400002: Couch
+    400004: Couch_Back
+    400006: Cube
+    400008: Cube_1
+    400010: Cube_1_2
+    400012: Cube_2
+    400014: Cube_2_2
+    400016: Cube_3
+    400018: Cube_4
+    400020: Cube_5
+    400022: Cushion
+    400024: Disc
+    400026: Frame___1x1
+    400028: Leaves
+    400030: Leaves_2
+    400032: //RootNode
+    400034: Marble_Columns
+    400036: Marble_Columns_1
+    400038: matte
+    400040: Pot
+    400042: Sphere
+    400044: Stem
+    400046: Stem_1
+    2300000: 1x1_Image
+    2300002: Couch_Back
+    2300004: Cube
+    2300006: Cube_1
+    2300008: Cube_1_2
+    2300010: Cube_2
+    2300012: Cube_2_2
+    2300014: Cube_3
+    2300016: Cube_4
+    2300018: Cube_5
+    2300020: Cushion
+    2300022: Disc
+    2300024: Frame___1x1
+    2300026: Leaves
+    2300028: Leaves_2
+    2300030: Marble_Columns
+    2300032: Marble_Columns_1
+    2300034: matte
+    2300036: Pot
+    2300038: Sphere
+    2300040: Stem
+    2300042: Stem_1
+    3300000: 1x1_Image
+    3300002: Couch_Back
+    3300004: Cube
+    3300006: Cube_1
+    3300008: Cube_1_2
+    3300010: Cube_2
+    3300012: Cube_2_2
+    3300014: Cube_3
+    3300016: Cube_4
+    3300018: Cube_5
+    3300020: Cushion
+    3300022: Disc
+    3300024: Frame___1x1
+    3300026: Leaves
+    3300028: Leaves_2
+    3300030: Marble_Columns
+    3300032: Marble_Columns_1
+    3300034: matte
+    3300036: Pot
+    3300038: Sphere
+    3300040: Stem
+    3300042: Stem_1
+    4300000: Sphere
+    4300002: Frame___1x1
+    4300004: matte
+    4300006: 1x1_Image
+    4300008: Pot
+    4300010: Cube_2
+    4300012: Cube_1
+    4300014: Cube_3
+    4300016: Cube_2_2
+    4300018: Cube_4
+    4300020: Cube_5
+    4300022: Stem_1
+    4300024: Leaves
+    4300026: Stem
+    4300028: Leaves_2
+    4300030: Cube_1_2
+    4300032: Cube
+    4300034: Cushion
+    4300036: Couch_Back
+    4300038: Marble_Columns_1
+    4300040: Marble_Columns
+    4300042: Disc
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

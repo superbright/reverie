@@ -11,26 +11,16 @@ namespace SB.Seed
     [RequireComponent(typeof(Receiver))]
     public class HandControllers : MonoBehaviour, IGlobalTouchpadPressDownHandler, IGlobalGripPressDownHandler, IGlobalTouchpadTouchHandler
     {
-        public GameObject leftMenu;
         public MenuUIHandler rightmenuui;
         public MenuUIHandler leftmenuui;
-        // MenuItem leftmenu;
+     
         MenuItem rightmenu;
-        MenuItem leftmenu;
-
-        MenuItem objectmenu;
-        MenuItem floormenu;
-
+    
         int leftcontrollerid;
         int rightcontrollerid;
 
-        //map of left hand pad
-        Dictionary<DIRECTION, MenuItem> objectmenumap;
-        Dictionary<DIRECTION, MenuItem> floormenumap;
-        Dictionary<DIRECTION, MenuItem> rightmenumap;
-
-        Dictionary<DOOType, Dictionary<DIRECTION, MenuItem>> leftmenuActions = new Dictionary<DOOType, Dictionary<DIRECTION, MenuItem>>();
-      
+        //all actions for different DOO types
+        Dictionary<DOOType, MenuItem> leftMenuMap = new Dictionary<DOOType, MenuItem>();
 
         List<ViveControllerModule> controllers;
 
@@ -109,60 +99,51 @@ namespace SB.Seed
         {
             yield return new WaitForSeconds(5);
 
-            leftcontrollerid = (int)leftmenuui.gameObject.GetComponentInChildren<SteamVR_TrackedObject>().index; // SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.Leftmost);
-            rightcontrollerid = (int)rightmenuui.gameObject.GetComponentInChildren<SteamVR_TrackedObject>().index; //SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.Rightmost);
-           // Debug.Log("left " + leftcontrollerid + " right " + rightcontrollerid);
+            leftcontrollerid = (int)leftmenuui.gameObject.GetComponentInChildren<SteamVR_TrackedObject>().index; 
+            rightcontrollerid = (int)rightmenuui.gameObject.GetComponentInChildren<SteamVR_TrackedObject>().index;
+            // Debug.Log("left " + leftcontrollerid + " right " + rightcontrollerid);
 
-            rightmenu = new MenuItem("Menu On", "Menu Off", "mainmenu", false,
-                (GameObject obj, ViveControllerModule.EventData edata) =>
-                {
-                        obj.SetActive(true);
-                        obj.transform.parent = edata.viveControllerModule.gameObject.transform;
-                        obj.transform.localPosition = new Vector3(0, 0, 0);
-                        obj.transform.localRotation = Quaternion.Euler(Vector3.zero);
-
-                    }, (GameObject obj, ViveControllerModule.EventData edata) =>
-                    {
-                        obj.SetActive(false);
-                    }, rightmenuui, leftMenu);
-
-
-            //build all in a dictionary
-            rightmenumap = new Dictionary<DIRECTION, MenuItem>()
-           {
-               {DIRECTION.NORTH, rightmenu },
-               
-           };
-
-            //load default menu item
-
-            objectmenu = new MenuItem("", "Point to trigger", "rightmenu", false,
+            // each menu item has a parent menu, and draws the menu items that are su
+            //parent
+            MenuItem objectmenu = new MenuItem("", "Point to trigger", "rightmenu", false,
                (GameObject obj, ViveControllerModule.EventData edata) =>
                {
                }, null, leftmenuui, null);
+            leftMenuMap.Add(DOOType.OBJECT, objectmenu);
 
-            floormenu = new MenuItem("", "", "", false,
+            //submenu items
+            objectmenu.setSubMenuItems(ObjectMenuActions.InitMenu(leftmenuui));
+
+            //parent
+            MenuItem floormenu = new MenuItem("", "", "", false,
              (GameObject obj, ViveControllerModule.EventData edata) =>
              {
              }, null, leftmenuui, null);
+            leftMenuMap.Add(DOOType.FLOOR, floormenu);
+            //sub menu actions
+            floormenu.setSubMenuItems(FloorMenuActions.InitMenu(leftmenuui));
 
-
-            objectmenumap = ObjectMenuActions.InitMenu(leftmenuui);
-            objectmenu.setSubMenuItems(objectmenumap);
-            objectmenu.drawMenuLabels();
-            leftmenuui.hideMenu();
-
-            floormenumap = FloorMenuActions.InitMenu(leftmenuui);
-            floormenu.setSubMenuItems(floormenumap);
-
-            leftmenuActions.Add(DOOType.FLOOR,floormenumap);
-            leftmenuActions.Add(DOOType.OBJECT, objectmenumap);
-
-
+          
             //setup right menu
+           // Dictionary<DIRECTION, MenuItem> rightmenumap;
+            rightmenu = new MenuItem("Menu On", "Menu Off", "mainmenu", false,
+                (GameObject obj, ViveControllerModule.EventData edata) =>
+                {
+                    obj.SetActive(true);
+                    obj.transform.parent = edata.viveControllerModule.gameObject.transform;
+                    obj.transform.localPosition = new Vector3(0, 0, 0);
+                    obj.transform.localRotation = Quaternion.Euler(Vector3.zero);
 
-            rightmenu.setSubMenuItems(rightmenumap);
+                }, (GameObject obj, ViveControllerModule.EventData edata) =>
+                {
+                    obj.SetActive(false);
+                }, rightmenuui, null);
+
+            rightmenu.setSubMenuItems(MainMenuActions.InitMenu(rightmenuui));
             rightmenu.drawMenuLabels();
+
+            //hide everything until you wanna draw them
+            leftmenuui.hideMenu();
 
         }
 
@@ -172,20 +153,19 @@ namespace SB.Seed
         /// </summary>
         /// <param name="type"></param>
         public void setMenuItem(DOOType type)
-        {
+        { 
             leftmenuui.hideMenu();
-            switch (type)
-            {
-                case DOOType.OBJECT:
-                    objectmenu.drawMenuLabels();
-                    break;
-                case DOOType.FLOOR:
-                    floormenu.drawMenuLabels();
-                    break;
-                case DOOType.NONE:
-                    leftmenuui.hideMenu();
-                    break;
-            }
+
+              // find matching action and trigger that
+               MenuItem val;
+                if(leftMenuMap.TryGetValue(type, out val)) {
+                    val.drawMenuLabels();
+         
+                } else {
+                    Debug.Log("no action bro");
+                     leftmenuui.hideMenu();
+                 }
+         
         }
 
   
@@ -194,26 +174,50 @@ namespace SB.Seed
            // Debug.Log(eventData.viveControllerModule.Controller.index);
            // Debug.Log("left " + leftcontrollerid + " right " + rightcontrollerid);
 
-            DOOType type = eventData.currentRaycast.gameObject.GetComponentInChildren<DOOObject>().type;
 
+            //is left menu
             if (eventData.viveControllerModule.Controller.index == leftcontrollerid)
             {
-            
-                // find matching action and trigger that
-               MenuItem val;
-                if(leftmenuActions[type].TryGetValue(ParseDirection(eventData),out val)) {
-                    
-                    val.trigger(eventData.currentRaycast.gameObject, eventData);
-                    leftmenu.ui.setSelected(ParseDirection(eventData));
-                } else {
-                    Debug.Log("no action bro");
+
+                DOOType type = eventData.currentRaycast.gameObject.GetComponentInChildren<DOOObject>().type;
+                // find matching main menu from DOO type
+                MenuItem mainmenu;
+               if(leftMenuMap.TryGetValue(type,out mainmenu))
+                {
+                    //find matching submenu from Direction
+                    MenuItem submenu;
+                    if (mainmenu.submenuitems.TryGetValue(ParseDirection(eventData), out submenu))
+                    { 
+                        submenu.trigger(eventData.currentRaycast.gameObject, eventData);
+                        mainmenu.ui.setSelected(ParseDirection(eventData));
+                    }
+                    else
+                    {
+                        Debug.Log("no action bro");
+                    }
+
+                } else
+                {
+                    //no menu found
                 }
             }
+            // no its actually right menu
             else
             {
                
-                rightmenu.setState(!rightmenu.isActivated, eventData);
-                rightmenu.ui.setSelected(ParseDirection(eventData));
+                //rightmenu.setState(!rightmenu.isActivated, eventData);
+                //rightmenu.ui.setSelected(ParseDirection(eventData));
+                //find matching submenu from Direction
+                MenuItem submenu;
+                if (rightmenu.submenuitems.TryGetValue(ParseDirection(eventData), out submenu))
+                {
+                    submenu.trigger(MainMenuManager.Instance.gameObject, eventData);
+                    //rightmenu.ui.setSelected(ParseDirection(eventData));
+                }
+                else
+                {
+                    Debug.Log("no action bro");
+                }
             }
         }
 

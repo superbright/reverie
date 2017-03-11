@@ -11,46 +11,8 @@ using Valve.VR;
 
 public static class SteamVR_Utils
 {
-    public class Event
-    {
-        public delegate void Handler(params object[] args);
-
-        public static void Listen(string message, Handler action)
-        {
-            var actions = listeners[message] as Handler;
-            if (actions != null)
-            {
-                listeners[message] = actions + action;
-            }
-            else
-            {
-                listeners[message] = action;
-            }
-        }
-
-        public static void Remove(string message, Handler action)
-        {
-            var actions = listeners[message] as Handler;
-            if (actions != null)
-            {
-                listeners[message] = actions - action;
-            }
-        }
-
-        public static void Send(string message, params object[] args)
-        {
-            var actions = listeners[message] as Handler;
-            if (actions != null)
-            {
-                actions(args);
-            }
-        }
-
-        private static Hashtable listeners = new Hashtable();
-    }
-
-    // this version does not clamp [0..1]
-    public static Quaternion Slerp(Quaternion A, Quaternion B, float t)
+	// this version does not clamp [0..1]
+	public static Quaternion Slerp(Quaternion A, Quaternion B, float t)
 	{
 		var cosom = Mathf.Clamp(A.x * B.x + A.y * B.y + A.z * B.z + A.w * B.w, -1.0f, 1.0f);
 		if (cosom < 0.0f)

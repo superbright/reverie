@@ -56,7 +56,7 @@ namespace SB.Seed
                          { HandControllers.DIRECTION.SOUTHEAST, southeast },
                           { HandControllers.DIRECTION.SOUTH, south },
                            { HandControllers.DIRECTION.SOUTHWEST,southwest }
-                          // { HandControllers.DIRECTION.cet,southwest }
+
 
                 };
             UIGuideMap = new Dictionary<HandControllers.DIRECTION, GameObject>()
@@ -69,7 +69,7 @@ namespace SB.Seed
                          { HandControllers.DIRECTION.SOUTHEAST, southeastguide },
                           { HandControllers.DIRECTION.SOUTH, southguide },
                            { HandControllers.DIRECTION.SOUTHWEST,southwestguide }
-                          // { HandControllers.DIRECTION.cet,southwest }
+
 
                 };
 

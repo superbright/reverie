@@ -42,4 +42,38 @@ namespace SB.Seed
 
         }
     }
+
+    /// <summary>
+    /// Object transform to pass back to socket, must abstract and have different types
+    /// </summary>
+    [Serializable]
+    public class ObjectData
+    {
+        public ObjectData(BasicTranform transform, string objectid)
+        {
+            this.objectid = objectid;
+            this.transform = transform;
+
+        }
+        public string objectid;
+        public string planetid;
+        public BasicTranform transform;
+
+         
+    }
+    [Serializable]
+    public class BasicTranform
+    {
+        public BasicTranform(Transform transform)
+        {
+            position = transform.position;
+            scale = transform.localScale;
+            rotation = transform.rotation.eulerAngles;
+        }
+        public Vector3 position;
+        public Vector3 scale;
+        public Vector3 rotation;
+    }
+
+    
 }
