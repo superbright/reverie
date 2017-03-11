@@ -48,6 +48,7 @@ namespace SB.Seed
         public IEnumerator LoadStuff(HTTPMethods type, string endpoint, Action<string> callbacksuccess = null, Action<string> callbackerr = null, string data = null)
         {
             HTTPRequest request = new HTTPRequest(new Uri(BASE_URI + endpoint), type);
+            Debug.Log(data);
             if(type == HTTPMethods.Post && data != null)
             {
                 request.SetHeader("Content-Type", "application/json; charset=UTF-8");
