@@ -48,9 +48,10 @@ namespace SB.Seed
         public IEnumerator LoadStuff(HTTPMethods type, string endpoint, Action<string> callbacksuccess = null, Action<string> callbackerr = null, string data = null)
         {
             HTTPRequest request = new HTTPRequest(new Uri(BASE_URI + endpoint), type);
-            Debug.Log(data);
+           
             if(type == HTTPMethods.Post && data != null)
             {
+				Debug.Log(data);
                 request.SetHeader("Content-Type", "application/json; charset=UTF-8");
                 request.RawData = Encoding.UTF8.GetBytes(data);
 
@@ -64,11 +65,13 @@ namespace SB.Seed
             {
                 // The request finished without any problem.
                 case HTTPRequestStates.Finished:
-                    Debug.Log("Request Finished Successfully!\n" + request.Response.StatusCode);
-                    if (callbacksuccess != null)
-                        callbacksuccess(request.Response.DataAsText);
+                    Debug.Log("Request Finished!\n" + request.Response.StatusCode);
 
-                    break;
+				if (request.Response.StatusCode == 200 && callbacksuccess != null)
+                        callbacksuccess(request.Response.DataAsText);
+				else if(request.Response.StatusCode == 500 & callbackerr != null)
+					callbackerr(request.Response.DataAsText);
+				 break;
 
                 // The request finished with an unexpected error.
                 // The request's Exception property may contain more information about the error.

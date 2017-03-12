@@ -110,6 +110,8 @@ namespace SB.Seed
             graphPlanet planet = new graphPlanet();
             planet.name = planetName;
 
+			Debug.Log (JsonUtility.ToJson (planet));
+
             NetworkHandler restapi = GetComponentInChildren<NetworkHandler>();
             StartCoroutine(restapi.LoadStuff(restapi.methodforCall("POST"), NetworkHandler.CREATE + "/universe/multiverse", (data) =>
             {
@@ -119,7 +121,10 @@ namespace SB.Seed
                 currentPlanetid = myObject._to.Split('/')[1];
 
                 GetPlanets();
-            },null,JsonUtility.ToJson(planet)));
+				},(data) =>
+				{
+					Debug.Log(data);
+				},JsonUtility.ToJson(planet)));
 
         }
 
