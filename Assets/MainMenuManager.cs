@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System;
 
 public class MainMenuManager : MonoBehaviour {
@@ -12,6 +13,7 @@ public class MainMenuManager : MonoBehaviour {
     public static MainMenuManager Instance { get { return _instance; } }
 
     int currentMenu = 0;
+    int currentPos = 0;
 
     // Use this for initialization
     void Awake () {
@@ -24,8 +26,22 @@ public class MainMenuManager : MonoBehaviour {
             _instance = this;
         }
     }
-	
-	public void showNextMenu(Transform parent)
+
+    public void scrollDown(Transform obj)
+    {
+        ScrollRect rect = menus[currentMenu].obj.GetComponentInChildren<ScrollRect>();
+        Debug.Log(rect);
+        rect.verticalNormalizedPosition += 0.1f;
+    }
+
+    public void scrollUp(Transform obj)
+    {
+        ScrollRect rect = menus[currentMenu].obj.GetComponentInChildren<ScrollRect>();
+        Debug.Log(rect);
+        rect.verticalNormalizedPosition -= 0.1f;
+    }
+
+    public void showNextMenu(Transform parent)
     {
        this.parent.transform.parent = parent;
        this.parent.transform.localPosition = new Vector3(0, 0, 0.5f);
@@ -45,8 +61,6 @@ public class MainMenuManager : MonoBehaviour {
         this.parent.transform.localPosition = new Vector3(0, 0, 0.5f);
         this.parent.transform.localRotation = Quaternion.Euler(Vector3.zero);
 
-        Debug.Log("show prev menu");
-        Debug.Log("show next menu");
         if (currentMenu -1 >= 0)
             currentMenu--;
         else

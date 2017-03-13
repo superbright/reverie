@@ -118,9 +118,12 @@ namespace SB.Seed
             collisionAxis.Add(planey);
             collisionAxis.Add(planez);
 
-          
-
-
+            for (int z = 0; z < axis.Count; z++)
+            {
+                axis[z].gameObject.SetActive(false);
+                collisionAxis[z].SetActive(false);
+                collisionAxis[z].GetComponent<Rigidbody>().detectCollisions = false;
+            }
 
         }
 
@@ -134,8 +137,8 @@ namespace SB.Seed
             {
                 if (_axis == AXIS.ALL)
                 {
-                    axis[k].gameObject.SetActive(true);
-                    collisionAxis[k].SetActive(true);
+                    axis[k].gameObject.SetActive(false);
+                    collisionAxis[k].SetActive(false);
                     collisionAxis[k].GetComponent<Rigidbody>().detectCollisions = false;
                 }
                 else if (k == ((int)_axis))

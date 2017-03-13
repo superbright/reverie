@@ -12,7 +12,7 @@ namespace SB.Seed
     public class NetworkHandler : MonoBehaviour
     {
 
-        string BASE_URI = "http://192.168.1.227:4000";
+        public string BASE_URI = "";
         public static string GRAPH = "/getPlanets";
         public static string CREATE = "/createPlanet";
         public static string ADDOBJECT = "/addObject";
@@ -48,7 +48,7 @@ namespace SB.Seed
         public IEnumerator LoadStuff(HTTPMethods type, string endpoint, Action<string> callbacksuccess = null, Action<string> callbackerr = null, string data = null)
         {
             HTTPRequest request = new HTTPRequest(new Uri(BASE_URI + endpoint), type);
-           
+            Debug.Log(BASE_URI + endpoint);
             if(type == HTTPMethods.Post && data != null)
             {
 				Debug.Log(data);

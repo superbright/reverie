@@ -13,18 +13,43 @@ namespace SB.Seed
         public List<GameObject> onSceneObjects;
         public Transform parentScene;
 
+        private static ObjectFactory _instance;
+        public static ObjectFactory Instance { get { return _instance; } }
+
+        void Awake()
+        {
+            if (_instance != null && _instance != this)
+            {
+                Destroy(this.gameObject);
+            }
+            else
+            {
+                _instance = this;
+            }
+        }
         // Use this for initialization
         void Start()
         {
-            onSceneObjects = new List<GameObject>();
+            //onSceneObjects = new List<GameObject>();
         }
 
         public void triggerPrefabAtZero(int index)
         {
-            triggerPrefab(0, Vector3.zero);
+            triggerPrefab(index, Vector3.zero,index.ToString());
         }
 
-        public void triggerPrefab(int index, Vector3 location)
+        public void resetScene()
+        {
+            Debug.Log("reset");
+            foreach(GameObject g in onSceneObjects)
+            {
+                Debug.Log(g.name);
+                Destroy(g);
+            }
+            onSceneObjects = new List<GameObject>();
+        }
+
+        public void triggerPrefab(int index, Vector3 location,string serverid)
         {
 
             GameObject parent = Instantiate(parentTranform, location, Quaternion.identity);
@@ -34,7 +59,7 @@ namespace SB.Seed
             parent.layer = 9;
 
             GameObject objcreative = Instantiate(prefabs[index], Vector3.zero, Quaternion.identity);
-            objcreative.name = "object" + Random.Range(0, 100);
+            objcreative.name = index.ToString();
             objcreative.transform.parent = parent.transform;
             objcreative.transform.localPosition = Vector3.zero;
             wrapper.content = objcreative;
@@ -45,9 +70,9 @@ namespace SB.Seed
             parent.transform.parent = this.parentScene;
 
             ReverieTimelineRecorder recorder = parent.GetComponentInChildren<ReverieTimelineRecorder>();
+            recorder.objectid = serverid;
 
-            WorldContentManager.Instance.AddObject(objcreative.name, recorder);
-
+         
         }
 
         public void loadObjectFromPlanet(string id, BasicTranform savedtransform)
@@ -58,8 +83,8 @@ namespace SB.Seed
             // 9 is objects layer
             parent.layer = 9;
 
-            GameObject objcreative = Instantiate(prefabs[0], Vector3.zero, Quaternion.identity);
-            objcreative.name = "object" + Random.Range(0, 100);
+            GameObject objcreative = Instantiate(prefabs[int.Parse(id)], Vector3.zero, Quaternion.identity);
+            objcreative.name = id;
             objcreative.transform.parent = parent.transform;
             objcreative.transform.localPosition = Vector3.zero;
             wrapper.content = objcreative;
@@ -72,8 +97,9 @@ namespace SB.Seed
             parent.transform.rotation = Quaternion.Euler(savedtransform.rotation);
 
             ReverieTimelineRecorder recorder = parent.GetComponentInChildren<ReverieTimelineRecorder>();
+            recorder.objectid = id;
 
-            WorldContentManager.Instance.AddObject(objcreative.name, recorder);
+           // WorldContentManager.Instance.AddObject(objcreative.name, recorder);
         }
 
         public void deletePrefab(GameObject foundobj)

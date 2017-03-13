@@ -24,13 +24,28 @@ namespace SB.Seed
                   obj.SendMessage("showPrevMenu", edata.viveControllerModule.gameObject.transform);
               }, null, ui, null);
 
+            MenuItem scrollUp = new MenuItem("Scroll Up", "", "scrollup", true,
+              (GameObject obj, ViveControllerModule.EventData edata) =>
+              {
+                  obj.SendMessage("scrollUp", edata.viveControllerModule.gameObject.transform);
+              }, null, ui, null);
+
+
+            MenuItem scrolldown = new MenuItem("Scroll Down", "", "scrolldown", true,
+              (GameObject obj, ViveControllerModule.EventData edata) =>
+              {
+                  obj.SendMessage("scrollDown", edata.viveControllerModule.gameObject.transform);
+              }, null, ui, null);
+
             // submenuitems = new List<MenuItem> { movex, scaleup, movey, movex };
 
             //build all in a dictionary
-           return new Dictionary<HandControllers.DIRECTION, MenuItem>()
+            return new Dictionary<HandControllers.DIRECTION, MenuItem>()
            {
                 {HandControllers.DIRECTION.WEST, prevmenu },
-                {HandControllers.DIRECTION.EAST, nextmenu }
+                {HandControllers.DIRECTION.EAST, nextmenu },
+                {HandControllers.DIRECTION.NORTH,scrollUp },
+                {HandControllers.DIRECTION.SOUTH,scrolldown }
               
            };
         }
