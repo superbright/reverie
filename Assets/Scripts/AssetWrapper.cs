@@ -30,6 +30,7 @@ namespace SB.Seed
             {
                selectionObject.SetActive(false);
             }
+            GetComponent<ReverieTimelineRecorder>().pointerExit();
         }
 
         /// <summary>
@@ -127,6 +128,8 @@ namespace SB.Seed
             center = localCenter;
 
             visualCue.transform.localPosition = localCenter;
+            visualCue.gameObject.SetActive(false);
+            selectionObject.SetActive(false);
 
         }
 

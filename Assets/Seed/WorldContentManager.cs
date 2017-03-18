@@ -12,11 +12,14 @@ namespace SB.Seed
         public static string MENUBUTTON = "GenericMenuButton";
         public GameObject scrollView;
         public graphUniverse worldData;
+       
         //GraphController mygraph;
 
         public ObjectFactory objFactory;
 
         public string currentPlanetid;
+        public graphPlanet currentPlanet;
+        public Text planetNameinMenu;
 
         private static WorldContentManager _instance;
         public static WorldContentManager Instance { get { return _instance; } }
@@ -75,6 +78,18 @@ namespace SB.Seed
             restapi.SyncObject(transform);
         }
 
+        public void DeleteObject(string objectid)
+        {
+            NetworkHandler restapi = GetComponentInChildren<NetworkHandler>();
+            StartCoroutine(restapi.LoadStuff(restapi.methodforCall("POST"), NetworkHandler.DELETEOBJECT + "/" + objectid, (data) =>
+            {
+              
+            }, (data) =>
+            {
+                Debug.Log(data);
+            },null));
+        }
+
         public void AddPlanet(string planetName)
         {
             //need a name
@@ -87,15 +102,14 @@ namespace SB.Seed
             //clean scene
             ObjectFactory.Instance.resetScene();
 
-            Debug.Log(JsonUtility.ToJson(planet));
-
             NetworkHandler restapi = GetComponentInChildren<NetworkHandler>();
             StartCoroutine(restapi.LoadStuff(restapi.methodforCall("POST"), NetworkHandler.CREATE + "/universe/multiverse", (data) =>
             {
-
-                ArangoEdge myObject = JsonUtility.FromJson<ArangoEdge>(data);
-                Debug.Log(myObject._to + " " + myObject._from);
-                currentPlanetid = myObject._to.Split('/')[1];
+               // Debug.Log(data);
+                graphPlanet nuplanet = JsonUtility.FromJson<graphPlanet>(data);
+                currentPlanetid = nuplanet._id.Split('/')[1];
+                currentPlanet = nuplanet;
+                planetNameinMenu.text = nuplanet.name;
 
                 GetPlanets();
             }, (data) =>
@@ -111,20 +125,22 @@ namespace SB.Seed
             StartCoroutine(restapi.LoadStuff(restapi.methodforCall("GET"), NetworkHandler.GETOBJECTS + "/" + planetid, (data) =>
             {
              
-                //Debug.Log(data);
+                Debug.Log(data);
                 Planet planet = JsonUtility.FromJson<Planet>(data);
                 if (planet.id != null)
                     ObjectFactory.Instance.resetScene();
              
                 Debug.Log(planet.id);
                 currentPlanetid = planet.id;
+                planetNameinMenu.text = planet.name;
+
 
                 foreach (ReverieObject obj in planet.data)
                 {
                     Debug.Log(obj.assetid);
                     if(obj.assetid != null)
                     {
-                        objFactory.loadObjectFromPlanet(obj.assetid, obj.transform);
+                        objFactory.loadObjectFromPlanet(obj);
                     }
                 }
             }));
@@ -136,8 +152,6 @@ namespace SB.Seed
             if (this.currentPlanetid == "0")
                 return;
 
-           // Debug.Log(objectid);
-
             NetworkHandler restapi = GetComponentInChildren<NetworkHandler>();
             StartCoroutine(restapi.LoadStuff(restapi.methodforCall("POST"), NetworkHandler.ADDOBJECT + "/" + this.currentPlanetid + "/" + objectid, (data) =>
             {
@@ -146,7 +160,12 @@ namespace SB.Seed
                 Debug.Log(myObject._to + " " + myObject._from);
                 string serverid = myObject._to.Split('/')[1];
 
-                ObjectFactory.Instance.triggerPrefab(index, obtrans.position, serverid);
+                ReverieObject newObj = new ReverieObject();
+                newObj._id = serverid;
+                newObj.transform = new BasicTranform(obtrans);
+
+
+                ObjectFactory.Instance.triggerPrefab(index, newObj);
                 UIButtonTrigger trigger = obtrans.gameObject.GetComponentInChildren<UIButtonTrigger>();
                 trigger.okDone();
 
@@ -165,8 +184,6 @@ namespace SB.Seed
                 worldData = JsonUtility.FromJson<graphUniverse>(data);
 
                 Draw2DUIMenu(worldData.vertices);
-
-                //mygraph.ResetWorld ();
 
                 float i = 0.01f;
                 foreach (graphPlanet v in worldData.vertices)
@@ -217,6 +234,7 @@ namespace SB.Seed
     {
         public string assetid;
         public BasicTranform transform;
+        public GameObject obj;
     }
 
     [Serializable]
@@ -224,6 +242,7 @@ namespace SB.Seed
     {
         public ReverieObject [] data;
         public string id;
+        public string name;
     }
 
     [Serializable]

@@ -10,7 +10,7 @@ namespace SB.Seed
 
         public GameObject parentTranform;
         public GameObject[] prefabs;
-        public List<GameObject> onSceneObjects;
+        public List<ReverieObject> onSceneObjects;
         public Transform parentScene;
 
         private static ObjectFactory _instance;
@@ -35,24 +35,25 @@ namespace SB.Seed
 
         public void triggerPrefabAtZero(int index)
         {
-            triggerPrefab(index, Vector3.zero,index.ToString());
+            //triggerPrefab(index, Vector3.zero,index.ToString());
         }
 
         public void resetScene()
         {
-            Debug.Log("reset");
-            foreach(GameObject g in onSceneObjects)
+           
+            foreach(ReverieObject g in onSceneObjects)
             {
-                Debug.Log(g.name);
-                Destroy(g);
+                Debug.Log(g._id);
+                Destroy(g.obj);
             }
-            onSceneObjects = new List<GameObject>();
+
+            onSceneObjects = new List<ReverieObject>();
         }
 
-        public void triggerPrefab(int index, Vector3 location,string serverid)
+        public void triggerPrefab(int index, ReverieObject obj)
         {
 
-            GameObject parent = Instantiate(parentTranform, location, Quaternion.identity);
+            GameObject parent = Instantiate(parentTranform, obj.transform.position, Quaternion.identity);
             AssetWrapper wrapper = parent.GetComponent<AssetWrapper>();
             //TODO: organize these better
             // 9 is objects layer
@@ -63,54 +64,58 @@ namespace SB.Seed
             objcreative.transform.parent = parent.transform;
             objcreative.transform.localPosition = Vector3.zero;
             wrapper.content = objcreative;
- 
-            onSceneObjects.Add(parent);
+
+            obj.obj = parent;
+            onSceneObjects.Add(obj);
             wrapper.Init();
 
             parent.transform.parent = this.parentScene;
 
             ReverieTimelineRecorder recorder = parent.GetComponentInChildren<ReverieTimelineRecorder>();
-            recorder.objectid = serverid;
+            recorder.objectid = obj._id;
 
          
         }
 
-        public void loadObjectFromPlanet(string id, BasicTranform savedtransform)
+        public void loadObjectFromPlanet(ReverieObject obj)
         {
-            GameObject parent = Instantiate(parentTranform, savedtransform.position, Quaternion.identity);
+            //obj.assetid, obj.transform,obj._id.Split('/')[1]
+
+            GameObject parent = Instantiate(parentTranform, obj.transform.position, Quaternion.identity);
             AssetWrapper wrapper = parent.GetComponent<AssetWrapper>();
             //TODO: organize these better
             // 9 is objects layer
             parent.layer = 9;
 
-            GameObject objcreative = Instantiate(prefabs[int.Parse(id)], Vector3.zero, Quaternion.identity);
-            objcreative.name = id;
+            GameObject objcreative = Instantiate(prefabs[int.Parse(obj.assetid)], Vector3.zero, Quaternion.identity);
+            objcreative.name = obj._id.Split('/')[1];
             objcreative.transform.parent = parent.transform;
             objcreative.transform.localPosition = Vector3.zero;
             wrapper.content = objcreative;
 
-            onSceneObjects.Add(parent);
+            obj.obj = parent;
+            onSceneObjects.Add(obj);
             wrapper.Init();
 
             parent.transform.parent = this.parentScene;
-            parent.transform.localScale = savedtransform.scale;
-            parent.transform.rotation = Quaternion.Euler(savedtransform.rotation);
+            parent.transform.localScale = obj.transform.scale;
+            parent.transform.rotation = Quaternion.Euler(obj.transform.rotation);
 
             ReverieTimelineRecorder recorder = parent.GetComponentInChildren<ReverieTimelineRecorder>();
-            recorder.objectid = id;
+            recorder.objectid = obj._id.Split('/')[1];
 
-           // WorldContentManager.Instance.AddObject(objcreative.name, recorder);
+     
         }
 
-        public void deletePrefab(GameObject foundobj)
+        public void deletePrefab(ReverieObject foundobj)
         {
 
             for (int i = 0; i < onSceneObjects.Count; i++)
             {
-                if ((GameObject)onSceneObjects[i] == foundobj)
+                if (onSceneObjects[i] == foundobj)
                 {
                     onSceneObjects.RemoveAt(i);
-                    Destroy(foundobj);
+                    Destroy(foundobj.obj);
                 }
             }
 

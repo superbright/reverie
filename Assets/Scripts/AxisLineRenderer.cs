@@ -15,6 +15,7 @@ namespace SB.Seed
             X,
             Y,
             Z,
+            ROTATE,
             NONE
         }
 
@@ -141,7 +142,7 @@ namespace SB.Seed
                     collisionAxis[k].SetActive(false);
                     collisionAxis[k].GetComponent<Rigidbody>().detectCollisions = false;
                 }
-                else if (k == ((int)_axis))
+                else if (k == ((int)_axis) && k < (int)AXIS.ROTATE)
                 {
                     axis[k - 1].gameObject.SetActive(true);
                     collisionAxis[k - 1].SetActive(true);

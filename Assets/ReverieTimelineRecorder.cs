@@ -10,6 +10,7 @@ namespace SB.Seed
 
         public string objectid;
         // Use this for initialization
+
         void Start()
         {
 
@@ -20,12 +21,27 @@ namespace SB.Seed
         {
             if (transform.hasChanged)
             {
-             
-                WorldContentManager.Instance.EditObject(new ObjectData(new BasicTranform(transform),objectid));
 
-                transform.hasChanged = false;
+                // WorldContentManager.Instance.EditObject(new ObjectData(new BasicTranform(transform),objectid));
+
+                // transform.hasChanged = false;
             }
 
+        }
+
+        public void pointerEnter()
+        {
+
+        }
+
+        public void pointerExit()
+        {
+            if (transform.hasChanged)
+            {
+
+                WorldContentManager.Instance.EditObject(new ObjectData(new BasicTranform(transform), objectid));
+                transform.hasChanged = false;
+            }
         }
     }
 }

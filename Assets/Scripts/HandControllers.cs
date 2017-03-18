@@ -11,6 +11,8 @@ namespace SB.Seed
     [RequireComponent(typeof(Receiver))]
     public class HandControllers : MonoBehaviour, IGlobalTouchpadPressDownHandler, IGlobalGripPressDownHandler, IGlobalTouchpadTouchHandler
     {
+
+        
         public MenuUIHandler rightmenuui;
         public MenuUIHandler leftmenuui;
      
@@ -21,6 +23,7 @@ namespace SB.Seed
 
         //all actions for different DOO types
         Dictionary<DOOType, MenuItem> leftMenuMap = new Dictionary<DOOType, MenuItem>();
+        EditingOjbect currentEditingObject;
 
         List<ViveControllerModule> controllers;
 
@@ -28,6 +31,13 @@ namespace SB.Seed
         public static HandControllers Instance { get { return _instance; } }
 
 
+        public enum EDITSTATE
+        {
+            NONE,
+            MOVE,
+            ROTATE,
+            SCALE
+        }
         //mapping the direction of Vive PAD
         public enum DIRECTION
         {
@@ -154,7 +164,7 @@ namespace SB.Seed
         /// <param name="type"></param>
         public void setMenuItem(DOOType type)
         { 
-            leftmenuui.hideMenu();
+              leftmenuui.hideMenu();
 
               // find matching action and trigger that
                MenuItem val;
@@ -171,9 +181,6 @@ namespace SB.Seed
   
         public void OnGlobalTouchpadPressDown(ViveControllerModule.EventData eventData)
         {
-           // Debug.Log(eventData.viveControllerModule.Controller.index);
-           // Debug.Log("left " + leftcontrollerid + " right " + rightcontrollerid);
-
 
             //is left menu
             if (eventData.viveControllerModule.Controller.index == leftcontrollerid)
@@ -188,7 +195,7 @@ namespace SB.Seed
                     MenuItem submenu;
                     if (mainmenu.submenuitems.TryGetValue(ParseDirection(eventData), out submenu))
                     { 
-                        submenu.trigger(eventData.currentRaycast.gameObject, eventData);
+                        currentEditingObject = submenu.trigger(eventData.currentRaycast.gameObject, eventData);
                         mainmenu.ui.setSelected(ParseDirection(eventData));
                     }
                     else
@@ -204,9 +211,6 @@ namespace SB.Seed
             // no its actually right menu
             else
             {
-               
-                //rightmenu.setState(!rightmenu.isActivated, eventData);
-                //rightmenu.ui.setSelected(ParseDirection(eventData));
                 //find matching submenu from Direction
                 MenuItem submenu;
                 if (rightmenu.submenuitems.TryGetValue(ParseDirection(eventData), out submenu))
@@ -224,10 +228,23 @@ namespace SB.Seed
         public void OnGlobalTouchpadTouch(ViveControllerModule.EventData eventData)
         {
 
+            //if(currenteditingobject !=null)
+            //{
+            //    //debug.log(currenteditingobject.editstate);
+            //    //debug.log(parseangle(eventdata));
+            //    if (currenteditingobject.selectedobject != null)
+            //    {
+            //        debug.log("rotate");
+            //       // currenteditingobject.selectedobject.transform.rotate(vector3.up, currenteditingobject.selectedobject.transform.rotation.eulerangles.y + (float)parseangle(eventdata));
+            //       // leantween.rotatearound(currenteditingobject.selectedobject, vector3.up, 5, 0.1f);
+            //    }
+            //}
+
             if (eventData.viveControllerModule.Controller.index == leftcontrollerid)
             {
                 //  Debug.Log("left");
                 leftmenuui.setHover(ParseDirection(eventData));
+                //submenu.trigger(eventData.currentRaycast.gameObject, eventData);
                 //left
             }
             else
@@ -250,6 +267,12 @@ namespace SB.Seed
                 Debug.Log("right");
                
             };
+        }
+
+        public double ParseAngle(ViveControllerModule.EventData eventData)
+        {
+            double rad = Math.Atan2(eventData.touchpadAxis.y, eventData.touchpadAxis.x);
+            return rad * Mathf.Rad2Deg;
         }
 
         /// <summary>
@@ -295,6 +318,23 @@ namespace SB.Seed
      
     }
 
+    //TODO: turn this into a state, undo type of thing
+    /// <summary>
+    /// Editing object is the object we are currently editing, and can hold multiple states in the future
+    /// </summary>
+    [Serializable]
+    public class EditingOjbect
+    {
+        public HandControllers.EDITSTATE editState;
+        public GameObject selectedObject;
+
+        public EditingOjbect(GameObject selectedObject, HandControllers.EDITSTATE editState)
+        {
+            this.selectedObject = selectedObject;
+            this.editState = editState;
+        }
+    }
+
     /// <summary>
     /// Class that creates a menu item with an action
     /// </summary>
@@ -302,8 +342,9 @@ namespace SB.Seed
     public class MenuItem
     {
         //TODO : move it to a const
-        static int SUBMENULENGTH = 4;
+        //static int SUBMENULENGTH = 4;
 
+        public HandControllers.EDITSTATE menuEditState = HandControllers.EDITSTATE.NONE;
 
         //name of the menu item
         public string labelActive;
@@ -336,6 +377,8 @@ namespace SB.Seed
             pressPairings.Add(false, off);
             pressPairings.Add(true, on);
 
+          
+
             if(_ui)
             {
                 ui = _ui;
@@ -366,9 +409,9 @@ namespace SB.Seed
         }
 
         // trigger the action
-        public void trigger(GameObject _obj, ViveControllerModule.EventData eventData)
+        public EditingOjbect trigger(GameObject _obj, ViveControllerModule.EventData eventData)
         {
-            if (!isActivated) return;
+            if (!isActivated) return null;
 
             Action<GameObject, ViveControllerModule.EventData> value;
             // execute the function
@@ -377,11 +420,17 @@ namespace SB.Seed
                 if (value != null)
                 {
                     value(_obj, eventData);
+                    return new EditingOjbect(_obj, this.menuEditState);
+
+                } else
+                {
+                    return null;
                 }
             }
             else
             {
                 Console.WriteLine("Key =" + true + " is not found.");
+                return null;
             }
 
         }

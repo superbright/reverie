@@ -16,15 +16,27 @@ namespace SB.Seed
             MenuItem scaleup = new MenuItem("Scale Up", "", "scaleup", true,
                (GameObject obj, ViveControllerModule.EventData edata) =>
                {
-                   obj.transform.localScale += new Vector3(0.01f, 0.01f, 0.01f);
+                   obj.transform.localScale += new Vector3(0.1f, 0.1f, 0.1f);
                }, null, ui, null);
 
-            MenuItem scaledown = new MenuItem("Scale Down", "", "scaledown", false,
+            MenuItem scaledown = new MenuItem("Scale Down", "", "scaledown", true,
               (GameObject obj, ViveControllerModule.EventData edata) =>
               {
-                  obj.transform.localScale -= new Vector3(0.01f, 0.01f, 0.01f);
+                  obj.transform.localScale -= new Vector3(0.1f, 0.1f, 0.1f);
               }, null, ui, null);
 
+
+            //movementState
+            MenuItem rotate = new MenuItem("Rotate Y", "", "Rotatey", true,
+             (GameObject obj, ViveControllerModule.EventData edata) =>
+             {
+                 LeanTween.rotateAround(obj, Vector3.up, 5, 0.1f);
+                 //movementState = ACTIONTYPE.MOVEX;
+                 // obj.GetComponentInChildren<AxisLineRenderer>().LockMode(AxisLineRenderer.AXIS.ROTATE);
+                 // obj.GetComponentInChildren<AssetWrapper>().isLocked = true;
+                 //update menu
+             }, null, ui, null);
+            rotate.menuEditState = HandControllers.EDITSTATE.ROTATE;
 
             //movementState
             MenuItem lockX = new MenuItem("LockX", "", "LockX", true,
@@ -66,7 +78,10 @@ namespace SB.Seed
             MenuItem destroy = new MenuItem("Destroy", "", "Destroy", true,
             (GameObject obj, ViveControllerModule.EventData edata) =>
             {
+                WorldContentManager.Instance.DeleteObject(obj.GetComponentInChildren<ReverieTimelineRecorder>().objectid);
                 GameObject.Destroy(obj);
+              
+
             }, null, ui, null);
 
             // submenuitems = new List<MenuItem> { movex, scaleup, movey, movex };
@@ -75,10 +90,11 @@ namespace SB.Seed
            return new Dictionary<HandControllers.DIRECTION, MenuItem>()
            {
                 {HandControllers.DIRECTION.NORTH, doneedit },
+               {HandControllers.DIRECTION.NORTHEAST,rotate },
                 {HandControllers.DIRECTION.EAST, destroy },
-                {HandControllers.DIRECTION.NORTHWEST,lockX },
-                {HandControllers.DIRECTION.WEST, lockY },
-                {HandControllers.DIRECTION.SOUTHWEST, lockZ }
+                {HandControllers.DIRECTION.NORTHWEST,scaleup },
+              //  {HandControllers.DIRECTION.WEST, lockY },
+                {HandControllers.DIRECTION.SOUTHWEST, scaledown }
            };
         }
 

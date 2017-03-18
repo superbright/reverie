@@ -17,6 +17,7 @@ namespace SB.Seed
         public static string CREATE = "/createPlanet";
         public static string ADDOBJECT = "/addObject";
         public static string GETOBJECTS = "/getObjects";
+        public static string DELETEOBJECT = "/deleteObject";
 
 
         SocketManager socketmanager;
@@ -41,7 +42,7 @@ namespace SB.Seed
 
         public void onHello(Socket socket, Packet packet, params object[] args)
         {
-            Debug.Log(args);
+           // Debug.Log(args);
            // socketmanager.Socket.Emit ("dumb", "omg", "message");
         }
 
